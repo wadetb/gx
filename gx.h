@@ -11,7 +11,7 @@
     ==================
 
     todo...
-    
+
     LICENSE
     =======
     zlib/libpng license
@@ -128,6 +128,13 @@ void gx_setup(void) {
                 [ATTR_vs_pos].format = SG_VERTEXFORMAT_FLOAT3,
                 [ATTR_vs_color0].format = SG_VERTEXFORMAT_UBYTE4N,
                 [ATTR_vs_texcoord0].format = SG_VERTEXFORMAT_SHORT2N
+            }
+        },
+        .colors[0] = {
+            .blend = {
+                .enabled = true,
+                .src_factor_rgb = SG_BLENDFACTOR_SRC_ALPHA,
+                .dst_factor_rgb = SG_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
             }
         },
         .shader = shd,

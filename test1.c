@@ -7,6 +7,13 @@
 #define GX_IMPL
 #include "gx.h"
 
+// TODO next:
+// + color
+
+bool mouse;
+int mouse_x;
+int mouse_y;
+
 gx_sprite hi;
 
 void init(void) {
@@ -14,13 +21,13 @@ void init(void) {
         .context = sapp_sgcontext()
     });
     gx_setup();
-    hi = gx_make_sprite("hi.png");
+    hi = gx_make_sprite("bitmap.png");
 }
 
 void frame(void) {
     gx_begin_drawing();
-    gx_draw_rect(300, 300, 100, 100);
-    gx_draw_sprite(400, 500, &hi);
+    gx_draw_rect(0, 0, 800, 600);
+    gx_draw_sprite(mouse_x-hi.width/2, mouse_y-hi.width/2, &hi);
     gx_end_drawing();
 }
 
@@ -29,12 +36,30 @@ void cleanup(void) {
     sg_shutdown();
 }
 
+static void event(const sapp_event* ev) {
+    switch (ev->type) {
+        case SAPP_EVENTTYPE_MOUSE_DOWN:
+            mouse = 1;
+            break;
+        case SAPP_EVENTTYPE_MOUSE_UP:
+            mouse = 0;
+            break;
+        case SAPP_EVENTTYPE_MOUSE_MOVE:
+            mouse_x = ev->mouse_x;
+            mouse_y = ev->mouse_y;
+            break;
+        default:
+            break;
+    }
+}
+
 sapp_desc sokol_main(int argc, char* argv[]) {
     (void)argc; (void)argv;
     return (sapp_desc){
         .init_cb = init,
         .frame_cb = frame,
         .cleanup_cb = cleanup,
+        .event_cb = event,
         .width = 800,
         .height = 600,
         .window_title = "test1",
