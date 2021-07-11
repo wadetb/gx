@@ -57,7 +57,7 @@ void gx_end_drawing();
 gx_sprite gx_make_sprite(const char *path);
 void gx_draw_sprite(int x, int y, gx_sprite *sprite);
 
-void gx_draw_rect(int x, int y, int width, int height);
+void gx_draw_rect(int x, int y, int width, int height, sg_color color);
 
 #ifdef __cplusplus
 }
@@ -76,6 +76,7 @@ static struct {
     sg_pipeline pip;
     sg_bindings bind;
     sg_image white_image;
+    sg_color white_color;
 } gx_state;
 
 typedef struct {
@@ -119,6 +120,8 @@ void gx_setup(void) {
         .data.subimage[0][0] = SG_RANGE(white_pixels),
         .label = "white_image"
     });
+
+    gx_state.white_color = (sg_color){ 1.0f, 1.0f, 1.0f, 1.0f };
 
     sg_shader shd = sg_make_shader(texcube_shader_desc(sg_query_backend()));
 
@@ -181,7 +184,7 @@ gx_sprite gx_make_sprite(const char *path) {
     return sprite;
 }
 
-static vs_params_t gx_vs_params(int x, int y, int width, int height) {
+static vs_params_t gx_vs_params(int x, int y, int width, int height, sg_color color) {
     vs_params_t vs_params;
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
@@ -190,6 +193,10 @@ static vs_params_t gx_vs_params(int x, int y, int width, int height) {
     vs_params.mvp[5] = height * -2.0f / sapp_height();
     vs_params.mvp[12] = x * 2.0f / sapp_width() - 1.0f;
     vs_params.mvp[13] = y * -2.0f / sapp_height() + 1.0f;
+    vs_params.uniform_color[0] = color.r;
+    vs_params.uniform_color[1] = color.g;
+    vs_params.uniform_color[2] = color.b;
+    vs_params.uniform_color[3] = color.a;
     return vs_params;
 }
 
@@ -199,19 +206,19 @@ void gx_draw_sprite(int x, int y, gx_sprite *sprite) {
     gx_state.bind.fs_images[SLOT_tex] = sprite->image;
     sg_apply_bindings(&gx_state.bind);
 
-    vs_params_t vs_params = gx_vs_params(x, y, sprite->width, sprite->height);
+    vs_params_t vs_params = gx_vs_params(x, y, sprite->width, sprite->height, gx_state.white_color);
     sg_apply_uniforms(SG_SHADERSTAGE_VS, SLOT_vs_params, &SG_RANGE(vs_params));
 
     sg_draw(0, 6, 1);
 }
 
-void gx_draw_rect(int x, int y, int width, int height) {
+void gx_draw_rect(int x, int y, int width, int height, sg_color color) {
     sg_apply_pipeline(gx_state.pip);
 
     gx_state.bind.fs_images[SLOT_tex] = gx_state.white_image;
     sg_apply_bindings(&gx_state.bind);
 
-    vs_params_t vs_params = gx_vs_params(x, y, width, height);
+    vs_params_t vs_params = gx_vs_params(x, y, width, height, color);
     sg_apply_uniforms(SG_SHADERSTAGE_VS, SLOT_vs_params, &SG_RANGE(vs_params));
 
     sg_draw(0, 6, 1);

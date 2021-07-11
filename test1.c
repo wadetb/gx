@@ -7,9 +7,6 @@
 #define GX_IMPL
 #include "gx.h"
 
-// TODO next:
-// + color
-
 bool mouse;
 int mouse_x;
 int mouse_y;
@@ -26,7 +23,7 @@ void init(void) {
 
 void frame(void) {
     gx_begin_drawing();
-    gx_draw_rect(0, 0, 800, 600);
+    gx_draw_rect(0, 0, 800, 600, (sg_color){ .4f, .5f, 1.0f, 1.0f } );
     gx_draw_sprite(mouse_x-hi.width/2, mouse_y-hi.width/2, &hi);
     gx_end_drawing();
 }

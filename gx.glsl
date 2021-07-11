@@ -1,6 +1,7 @@
 #pragma sokol @vs vs
 uniform vs_params {
     mat4 mvp;
+    vec4 uniform_color;
 };
 
 in vec4 pos;
@@ -12,7 +13,7 @@ out vec2 uv;
 
 void main() {
     gl_Position = mvp * pos;
-    color = color0;
+    color = color0 * uniform_color;
     uv = texcoord0;
 }
 #pragma sokol @end
