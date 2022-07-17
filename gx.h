@@ -201,6 +201,9 @@ static vs_params_t gx_vs_params(int x, int y, int width, int height, sg_color co
 }
 
 void gx_draw_sprite(int x, int y, gx_sprite *sprite) {
+    if (sprite->image.id == SG_INVALID_ID)
+        return;
+
     sg_apply_pipeline(gx_state.pip);
 
     gx_state.bind.fs_images[SLOT_tex] = sprite->image;

@@ -1,4 +1,6 @@
+.vs/
 .vscode/
+out/
 *.exe
 *.ilk
 *.obj

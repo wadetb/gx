@@ -8,8 +8,8 @@
 #include "gx.h"
 
 bool mouse;
-int mouse_x;
-int mouse_y;
+float mouse_x;
+float mouse_y;
 
 gx_sprite hi;
 
@@ -18,7 +18,7 @@ void init(void) {
         .context = sapp_sgcontext()
     });
     gx_setup();
-    hi = gx_make_sprite("bitmap.png");
+    hi = gx_make_sprite("hi.png");
 }
 
 void frame(void) {
@@ -59,6 +59,6 @@ sapp_desc sokol_main(int argc, char* argv[]) {
         .event_cb = event,
         .width = 800,
         .height = 600,
-        .window_title = "test1",
+        .window_title = "project1",
     };
 }
